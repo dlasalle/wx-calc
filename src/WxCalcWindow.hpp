@@ -8,6 +8,7 @@
  */
 
 #include <wx/wx.h>
+#include <vector>
 
 class WxCalcWindow :
   public wxFrame
@@ -22,4 +23,18 @@ class WxCalcWindow :
         WxCalcWindow const & rhs);
     WxCalcWindow& operator=(
         WxCalcWindow const & rhs);
+
+  private:
+    // display
+    wxTextCtrl * m_display;
+
+    // buttons
+    std::vector<wxButton*> m_numButtons;
+    wxButton * m_deciButton;
+    wxButton * m_signButton;
+    wxButton * m_addButton;
+    wxButton * m_subButton;
+    wxButton * m_mulButton;
+    wxButton * m_divButton;
+    wxButton * m_equalsButton;
 };
