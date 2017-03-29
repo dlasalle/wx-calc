@@ -52,15 +52,20 @@ wxBEGIN_EVENT_TABLE(WxCalcWindow, wxFrame)
 wxEND_EVENT_TABLE()
 
 WxCalcWindow::WxCalcWindow() :
-  wxFrame(NULL, wxID_ANY, "Wx-Calc", wxPoint(100,100), wxSize(400, 400))
+  wxFrame(NULL, wxID_ANY, "Wx-Calc", wxPoint(100,100), wxDefaultSize)
 {
   wxBoxSizer * topSizer = new wxBoxSizer(wxVERTICAL);
 
   m_display = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition,
       wxDefaultSize, 0); 
-  // make it non-editable
+  // There is a wxTE_READONLY style option, but it still allow selecting
   m_display->Disable();
-  topSizer->Add(m_display);
+  // have the text span our window horizontally
+  wxBoxSizer * displaySizer = new wxBoxSizer(wxHORIZONTAL);
+  displaySizer->Add(m_display, 1, wxEXPAND | wxALL, 0);
+
+  // we don't want this to expand vertically
+  topSizer->Add(displaySizer, 0, wxEXPAND, 0);
 
   // put a 10px spacer between the display and the buttons
   topSizer->AddSpacer(10);
@@ -91,38 +96,38 @@ WxCalcWindow::WxCalcWindow() :
 
   // first row
   for (int num = 1; num <= 3; ++num) {
-    buttonSizer->Add(m_numButtons[num], wxEXPAND);
+    buttonSizer->Add(m_numButtons[num], 1, wxEXPAND, 0);
   }
-  buttonSizer->Add(m_addButton, wxEXPAND);
+  buttonSizer->Add(m_addButton, 1, wxEXPAND, 0);
 
   // second row
   for (int num = 4; num <= 6; ++num) {
-    buttonSizer->Add(m_numButtons[num], wxEXPAND);
+    buttonSizer->Add(m_numButtons[num], 1, wxEXPAND, 0);
   }
-  buttonSizer->Add(m_subButton, wxEXPAND);
+  buttonSizer->Add(m_subButton, 1, wxEXPAND, 0);
 
   // third row
   for (int num = 7; num <= 9; ++num) {
-    buttonSizer->Add(m_numButtons[num], wxEXPAND);
+    buttonSizer->Add(m_numButtons[num], 1, wxEXPAND, 0);
   }
-  buttonSizer->Add(m_mulButton, wxEXPAND);
+  buttonSizer->Add(m_mulButton, 1, wxEXPAND, 0);
 
   // fourth row
-  buttonSizer->Add(m_numButtons[0], wxEXPAND);
+  buttonSizer->Add(m_numButtons[0], 1, wxEXPAND, 0);
 
-  buttonSizer->Add(m_deciButton, wxEXPAND);
-  buttonSizer->Add(m_signButton, wxEXPAND);
+  buttonSizer->Add(m_deciButton, 1, wxEXPAND, 0);
+  buttonSizer->Add(m_signButton, 1, wxEXPAND, 0);
 
-  buttonSizer->Add(m_divButton, wxEXPAND);
+  buttonSizer->Add(m_divButton, 1, wxEXPAND, 0);
 
   // special equals button in the last row and column, add three spacers to get
   // it into the last column
   buttonSizer->AddStretchSpacer();
   buttonSizer->AddStretchSpacer();
   buttonSizer->AddStretchSpacer();
-  buttonSizer->Add(m_equalsButton, wxEXPAND);
+  buttonSizer->Add(m_equalsButton, 1, wxEXPAND, 0);
 
-  topSizer->Add(buttonSizer);
+  topSizer->Add(buttonSizer, 1, wxEXPAND, 0);
 
   SetSizerAndFit(topSizer);
 }
