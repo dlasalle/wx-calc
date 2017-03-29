@@ -7,13 +7,27 @@
  * @date 2017-03-13
  */
 
-#include <cstdio>
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+#include <wx/display.h>
+#include "WxCalcWindow.hpp"
 
-int main(
-    int const argc,
-    char const * const * const argv)
+class App:
+  public wxApp
 {
-  printf("Hello world\n");
+  public:
+    virtual bool OnInit()
+		{
+				wxDisplay disp;
+				wxRect rect = disp.GetGeometry();
 
-  return 0;
-}
+				WxCalcWindow * win = new WxCalcWindow();
+				win->Show(true);
+
+				return true;
+		}
+};
+
+wxIMPLEMENT_APP(App);
