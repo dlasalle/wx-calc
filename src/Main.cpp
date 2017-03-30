@@ -21,7 +21,6 @@ class App:
     virtual bool OnInit()
 		{
 				wxDisplay disp;
-				wxRect rect = disp.GetGeometry();
 
 				WxCalcWindow * win = new WxCalcWindow();
 				win->Show(true);
