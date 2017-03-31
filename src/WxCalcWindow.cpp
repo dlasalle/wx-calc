@@ -49,6 +49,7 @@ double WxCalcWindow::getCurrentValue()
   try {
     return std::stod(std::string(m_display->GetValue().mb_str()));
   } catch (const std::invalid_argument& e) {
+    // assume unparsable equals 0
     return 0.0;
   }
 }
