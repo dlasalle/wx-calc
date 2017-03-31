@@ -39,7 +39,6 @@ enum event_ids {
 
 }
 
-
 /******************************************************************************
 * PRIVATE FUNCTIONS ***********************************************************
 ******************************************************************************/
@@ -96,7 +95,6 @@ void WxCalcWindow::performOp()
   } else {
     switch (m_op) {
       case ID_ADD_BUTTON: {
-        std::cout << "Performing addition" << std::endl;
         m_total += m_last;
         break;
       }
@@ -115,9 +113,10 @@ void WxCalcWindow::performOp()
         // show an error some how
         break;
       }
-      default:
-        std::cout << "Bad Op = " << m_op << std::endl;
-        //throw std::runtime_error("Unknown OP: " + std::to_string(m_op));
+      default: {
+        // TODO: handle this in a meaningful way for the user.
+        throw std::runtime_error("Unknown OP: " + std::to_string(m_op));
+      }
     }
     showTotal();
   }
@@ -202,7 +201,6 @@ void WxCalcWindow::onOpButton(
   }
 }
 
-
 /******************************************************************************
 * EVENT TABLE *****************************************************************
 ******************************************************************************/
@@ -236,14 +234,13 @@ wxBEGIN_EVENT_TABLE(WxCalcWindow, wxFrame)
   OP_EVENT(ID_EQUAL_BUTTON)
 wxEND_EVENT_TABLE()
 
-
-
 /******************************************************************************
 * PUBLIC FUNCTIONS ************************************************************
 ******************************************************************************/
 
 WxCalcWindow::WxCalcWindow() :
-  wxFrame(NULL, wxID_ANY, "Wx-Calc", wxPoint(100,100), wxDefaultSize),
+  wxFrame(NULL, wxID_ANY, "Wx-Calc", wxPoint(100,100), wxDefaultSize, \
+      wxCLOSE_BOX | wxCAPTION),
   m_display(nullptr),
   m_numButtons(),
   m_deciButton(nullptr),
@@ -265,7 +262,7 @@ WxCalcWindow::WxCalcWindow() :
 {
   wxBoxSizer * topSizer = new wxBoxSizer(wxVERTICAL);
 
-  m_display = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition,
+  m_display = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, \
       wxDefaultSize, wxTE_RIGHT); 
   // There is a wxTE_READONLY style option, but it still allow selecting
   m_display->Disable();
@@ -281,24 +278,35 @@ WxCalcWindow::WxCalcWindow() :
 
   // create the button grid with no space between buttons
   wxGridSizer * buttonSizer = new wxGridSizer(4, 0, 0);
+
+  wxSize buttonSize(64,64);
   
   // create all number buttons
   m_numButtons.resize(10);
   for (int num = 0; num < 10; ++num) {
-    m_numButtons[num] = new wxButton(this, num, std::to_string(num));
+    m_numButtons[num] = new wxButton(this, num, std::to_string(num), \
+        wxDefaultPosition, buttonSize);
   }
 
   // create operation buttons
-  m_addButton = new wxButton(this, ID_ADD_BUTTON, "+");
-  m_subButton = new wxButton(this, ID_SUB_BUTTON, "-");
-  m_mulButton = new wxButton(this, ID_MUL_BUTTON, "*");
-  m_divButton = new wxButton(this, ID_DIV_BUTTON, "/");
-  m_clsButton = new wxButton(this, ID_CLS_BUTTON, "CLS");
-  m_equalsButton = new wxButton(this, ID_EQUAL_BUTTON, "=");
+  m_addButton = new wxButton(this, ID_ADD_BUTTON, "+", wxDefaultPosition, \
+      buttonSize);
+  m_subButton = new wxButton(this, ID_SUB_BUTTON, "-", wxDefaultPosition, \
+      buttonSize);
+  m_mulButton = new wxButton(this, ID_MUL_BUTTON, "*", wxDefaultPosition, \
+      buttonSize);
+  m_divButton = new wxButton(this, ID_DIV_BUTTON, "/", wxDefaultPosition, \
+      buttonSize);
+  m_clsButton = new wxButton(this, ID_CLS_BUTTON, "CLS", wxDefaultPosition, \
+      buttonSize);
+  m_equalsButton = new wxButton(this, ID_EQUAL_BUTTON, "=", \
+      wxDefaultPosition, buttonSize);
 
   // create decimal and plus/minus buttons
-  m_deciButton = new wxButton(this, ID_DECI_BUTTON, ".");
-  m_signButton = new wxButton(this, ID_SIGN_BUTTON, "+/-");
+  m_deciButton = new wxButton(this, ID_DECI_BUTTON, ".", wxDefaultPosition, \
+      buttonSize);
+  m_signButton = new wxButton(this, ID_SIGN_BUTTON, "+/-", wxDefaultPosition, \
+      buttonSize);
 
   // the order in which we add determines the place in the grid, so add in
   // row-major order.
