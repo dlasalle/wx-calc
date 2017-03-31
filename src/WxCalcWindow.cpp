@@ -33,6 +33,7 @@ enum event_ids {
   ID_SUB_BUTTON,
   ID_MUL_BUTTON,
   ID_DIV_BUTTON,
+  ID_CLS_BUTTON,
   ID_EQUAL_BUTTON
 };
 
@@ -45,7 +46,11 @@ enum event_ids {
 
 double WxCalcWindow::getCurrentValue()
 {
-  return std::stod(std::string(m_display->GetValue().mb_str()));
+  try {
+    return std::stod(std::string(m_display->GetValue().mb_str()));
+  } catch (const std::invalid_argument& e) {
+    return 0.0;
+  }
 }
 
 void WxCalcWindow::updateDisplay()
@@ -71,7 +76,6 @@ void WxCalcWindow::clear()
   m_postDecimal.assign("");
   m_decimal = false;
   m_positive = true;
-  m_total = 0;
 }
 
 void WxCalcWindow::clearAndStore()
@@ -91,27 +95,28 @@ void WxCalcWindow::performOp()
   } else {
     switch (m_op) {
       case ID_ADD_BUTTON: {
-        m_total += getCurrentValue();
+        std::cout << "Performing addition" << std::endl;
+        m_total += m_last;
         break;
       }
       case ID_SUB_BUTTON: {
-        m_total -= getCurrentValue();
+        m_total -= m_last;
         break;
       }
       case ID_MUL_BUTTON: {
-        m_total *= getCurrentValue();
+        m_total *= m_last;
         break;
       }
       case ID_DIV_BUTTON: {
-        const double val = getCurrentValue();
-        if (val != 0) {
-          m_total /= val;
+        if (m_last != 0) {
+          m_total /= m_last;
         }
         // show an error some how
         break;
       }
       default:
-        throw std::runtime_error("Unknown OP: " + std::to_string(m_op));
+        std::cout << "Bad Op = " << m_op << std::endl;
+        //throw std::runtime_error("Unknown OP: " + std::to_string(m_op));
     }
     showTotal();
   }
@@ -120,13 +125,19 @@ void WxCalcWindow::performOp()
 void WxCalcWindow::showTotal()
 {
   clear();
-  m_display->SetValue(std::to_string(m_total));
+  if (m_total == static_cast<int64_t>(m_total)) {
+    m_display->SetValue(std::to_string(static_cast<int64_t>(m_total)));
+  } else {
+    m_display->SetValue(std::to_string(m_total));
+  }
 }
 
 template<int NUM>
 void WxCalcWindow::onNumButton(
     wxCommandEvent&)
 {
+  m_entryMode = true;
+
   // accumulate number
   if (!m_decimal) {
     m_preDecimal += std::to_string(NUM);
@@ -144,11 +155,13 @@ void WxCalcWindow::onOpButton(
   switch (OP) {
     case ID_DECI_BUTTON: {
       m_decimal = true;
+      m_entryMode = true;
       updateDisplay();
       break;
     }
     case ID_SIGN_BUTTON: {
       m_positive = !m_positive;
+      m_entryMode = true;
       updateDisplay();
       break;
     }
@@ -156,13 +169,32 @@ void WxCalcWindow::onOpButton(
     case ID_SUB_BUTTON:
     case ID_MUL_BUTTON:
     case ID_DIV_BUTTON: {
+      // perform any existing op (but not the current one)
+      if (m_entryMode) {
+        m_last = getCurrentValue();
+        m_entryMode = false;
+      }
       performOp();
       clearAndStore();
       showTotal();
       m_op = OP;
       break;
     }
+    case ID_CLS_BUTTON: {
+      // clear everything
+      clear();
+      m_entryMode = true;
+      m_total = 0;
+      m_last = 0;
+      m_op = -1;
+      updateDisplay();
+      break;
+    }
     case ID_EQUAL_BUTTON: {
+      if (m_entryMode) {
+        m_last = getCurrentValue();
+        m_entryMode = false;
+      }
       performOp();
       break;
     }
@@ -199,6 +231,7 @@ wxBEGIN_EVENT_TABLE(WxCalcWindow, wxFrame)
   OP_EVENT(ID_SUB_BUTTON)
   OP_EVENT(ID_MUL_BUTTON)
   OP_EVENT(ID_DIV_BUTTON)
+  OP_EVENT(ID_CLS_BUTTON)
   OP_EVENT(ID_EQUAL_BUTTON)
 wxEND_EVENT_TABLE()
 
@@ -218,13 +251,16 @@ WxCalcWindow::WxCalcWindow() :
   m_subButton(nullptr),
   m_mulButton(nullptr),
   m_divButton(nullptr),
+  m_clsButton(nullptr),
   m_equalsButton(nullptr),
   m_preDecimal(),
   m_postDecimal(),
   m_decimal(false),
   m_positive(true),
   m_total(0),
-  m_op(-1)
+  m_last(0),
+  m_op(-1),
+  m_entryMode(true)
 {
   wxBoxSizer * topSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -256,6 +292,7 @@ WxCalcWindow::WxCalcWindow() :
   m_subButton = new wxButton(this, ID_SUB_BUTTON, "-");
   m_mulButton = new wxButton(this, ID_MUL_BUTTON, "*");
   m_divButton = new wxButton(this, ID_DIV_BUTTON, "/");
+  m_clsButton = new wxButton(this, ID_CLS_BUTTON, "CLS");
   m_equalsButton = new wxButton(this, ID_EQUAL_BUTTON, "=");
 
   // create decimal and plus/minus buttons
@@ -291,11 +328,11 @@ WxCalcWindow::WxCalcWindow() :
 
   buttonSizer->Add(m_divButton, 1, wxEXPAND, 0);
 
-  // special equals button in the last row and column, add three spacers to get
-  // it into the last column
+  // special cls and equals buttons in the last row and last two columns, add 
+  // two spacers to move them over 
   buttonSizer->AddStretchSpacer();
   buttonSizer->AddStretchSpacer();
-  buttonSizer->AddStretchSpacer();
+  buttonSizer->Add(m_clsButton, 1, wxEXPAND, 0);
   buttonSizer->Add(m_equalsButton, 1, wxEXPAND, 0);
 
   topSizer->Add(buttonSizer, 1, wxEXPAND, 0);

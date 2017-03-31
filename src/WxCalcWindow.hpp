@@ -29,6 +29,7 @@ class WxCalcWindow :
     wxButton * m_subButton;
     wxButton * m_mulButton;
     wxButton * m_divButton;
+    wxButton * m_clsButton;
     wxButton * m_equalsButton;
 
     // internal variables
@@ -37,7 +38,9 @@ class WxCalcWindow :
     bool m_decimal;
     bool m_positive;
     double m_total;
+    double m_last;
     int m_op;
+    bool m_entryMode;
 
     double getCurrentValue();
     void updateDisplay();
