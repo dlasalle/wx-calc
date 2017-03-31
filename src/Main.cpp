@@ -19,14 +19,12 @@ class App:
 {
   public:
     virtual bool OnInit()
-		{
-				wxDisplay disp;
+    {
+      WxCalcWindow * win = new WxCalcWindow();
+      win->Show(true);
 
-				WxCalcWindow * win = new WxCalcWindow();
-				win->Show(true);
-
-				return true;
-		}
+      return true;
+    }
 };
 
 wxIMPLEMENT_APP(App);
