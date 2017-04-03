@@ -2,7 +2,8 @@ Wx-Calc
 =======
 
 This program is a simple example for using CMake and wxWidgets to create a
-portable GUI application.
+portable GUI application, detailed in the blog post
+https://solidlake.com/posts/wxwidgets/.
 
 Components used in this application:
 * wxBoxSizer
