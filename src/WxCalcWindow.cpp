@@ -7,12 +7,21 @@
  * @date 2017-03-28
  */
 
+
 #include "WxCalcWindow.hpp"
+#include "Calc.hpp"
 #include <stdexcept>
 #include <cstdint>
 
+
+namespace WxCalc
+{
+
+
 namespace
 {
+
+const int OP_OFFSET = 1024;
 
 enum event_ids {
   // important these map to the numbers
@@ -29,15 +38,19 @@ enum event_ids {
   // let these be auto assigned
   ID_DECI_BUTTON,
   ID_SIGN_BUTTON,
-  ID_ADD_BUTTON,
-  ID_SUB_BUTTON,
-  ID_MUL_BUTTON,
-  ID_DIV_BUTTON,
+  ID_ADD_BUTTON = OP_OFFSET + Calc::OP_ADD,
+  ID_SUB_BUTTON = OP_OFFSET + Calc::OP_SUB,
+  ID_MUL_BUTTON = OP_OFFSET + Calc::OP_MUL,
+  ID_DIV_BUTTON = OP_OFFSET + Calc::OP_DIV,
   ID_CLS_BUTTON,
   ID_EQUAL_BUTTON
 };
 
+
 }
+
+
+
 
 /******************************************************************************
 * PRIVATE FUNCTIONS ***********************************************************
@@ -93,31 +106,8 @@ void WxCalcWindow::performOp()
   if (m_op < 0) {
     // no op loaded -- do nothing
   } else {
-    switch (m_op) {
-      case ID_ADD_BUTTON: {
-        m_total += m_last;
-        break;
-      }
-      case ID_SUB_BUTTON: {
-        m_total -= m_last;
-        break;
-      }
-      case ID_MUL_BUTTON: {
-        m_total *= m_last;
-        break;
-      }
-      case ID_DIV_BUTTON: {
-        if (m_last != 0) {
-          m_total /= m_last;
-        }
-        // show an error some how
-        break;
-      }
-      default: {
-        // TODO: handle this in a meaningful way for the user.
-        throw std::runtime_error("Unknown OP: " + std::to_string(m_op));
-      }
-    }
+    m_total = Calc::performOperation(m_total, m_last, m_op);
+
     showTotal();
   }
 }
@@ -177,7 +167,7 @@ void WxCalcWindow::onOpButton(
       performOp();
       clearAndStore();
       showTotal();
-      m_op = OP;
+      m_op = OP - OP_OFFSET;
       break;
     }
     case ID_CLS_BUTTON: {
@@ -348,3 +338,7 @@ WxCalcWindow::WxCalcWindow() :
 
   SetSizerAndFit(topSizer);
 }
+
+
+}
+

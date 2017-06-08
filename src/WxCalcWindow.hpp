@@ -7,9 +7,19 @@
  * @date 2017-03-28
  */
 
+
+#ifndef WXCALC_SRC_WXCALCWINDOW_HPP
+#define WXCALC_SRC_WXCALCWINDOW_HPP
+
+
 #include <wx/wx.h>
 #include <vector>
 #include <string>
+
+
+namespace WxCalc
+{
+
 
 class WxCalcWindow :
   public wxFrame
@@ -110,3 +120,9 @@ class WxCalcWindow :
     WxCalcWindow& operator=(
         WxCalcWindow const & rhs);
 };
+
+
+}
+
+
+#endif

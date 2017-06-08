@@ -14,6 +14,11 @@
 #include <wx/display.h>
 #include "WxCalcWindow.hpp"
 
+
+namespace WxCalc
+{
+
+
 class App:
   public wxApp
 {
@@ -27,4 +32,8 @@ class App:
     }
 };
 
-wxIMPLEMENT_APP(App);
+
+}
+
+wxIMPLEMENT_APP(WxCalc::App);
+
