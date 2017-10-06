@@ -5,9 +5,15 @@ summary: Utility for viewing and modifying sparse matrices.
 homepage: https://github.com/solidlake/wx-calc
 commands:
   compile: |
-    ./configure --prefix=/usr && make
+    mkdir build
+    pushd build
+    cmake ..
+    make
+    popd
   install: |
+    pushd build
     make install DESTDIR="${BP_DESTDIR}"
+    popd
 packages:
   archlinux:
     builddeps:
