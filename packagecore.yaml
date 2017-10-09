@@ -5,7 +5,7 @@ summary: Utility for viewing and modifying sparse matrices.
 homepage: https://github.com/solidlake/wx-calc
 commands:
   compile: |
-    mkdir build
+    [[ -d build ]] || mkdir build
     pushd build
     cmake ..
     make
