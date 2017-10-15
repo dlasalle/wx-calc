@@ -1,5 +1,6 @@
 # CMake output
 /build
+Makefile
 
 # vim files
 *.swp
