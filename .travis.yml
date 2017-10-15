@@ -1,0 +1,20 @@
+dist: trusty
+sudo: required
+language: cpp
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get -qqy update
+  - sudo apt-get install -qy libwxgtk3.0-0
+  - sudo apt-get install -qy libwxgtk3.0-dev
+script:
+  - mkdir build
+  - pushd build
+  - cmake ..
+  - make
+  - popd
+  # test packagecore
+  - sudo apt-get install -qy python3 python3-pip
+  - sudo python3 -m pip install packagecore
+  - packagecore -o dist/ "1.2.3"
+

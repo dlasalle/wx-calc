@@ -1,0 +1,40 @@
+name: wx-calc 
+maintainer: Dominique LaSalle 
+license: MIT
+summary: Utility for viewing and modifying sparse matrices.
+homepage: https://github.com/solidlake/wx-calc
+commands:
+  compile: |
+    [[ -d build ]] || mkdir build
+    pushd build
+    cmake ..
+    make
+    popd
+  install: |
+    pushd build
+    make install DESTDIR="${BP_DESTDIR}"
+    popd
+packages:
+  archlinux:
+    builddeps:
+      - cmake 
+      - gcc
+      - wxgtk
+    deps:
+      - wxgtk
+  fedora25:
+    builddeps:
+      - cmake 
+      - gcc-c++
+      - wxGTK3
+      - wxGTK3-devel
+    deps:
+      - wxGTK3
+  ubuntu17.10:
+    builddeps:
+      - cmake 
+      - g++
+      - libwxgtk3.0-0v5
+      - libwxgtk3.0-dev
+    deps:
+      - libwxgtk3.0-0v5
