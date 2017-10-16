@@ -28,6 +28,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(wxWidgets COMPONENTS core base REQUIRED)
 
-enable_testing()
+if (DEFINED TESTS AND NOT TESTS EQUAL 0)
+  enable_testing()
+endif()
 
 add_subdirectory("src")

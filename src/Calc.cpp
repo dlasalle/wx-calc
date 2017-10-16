@@ -12,6 +12,8 @@
 
 #include "Calc.hpp"
 
+#include <string>
+
 
 
 

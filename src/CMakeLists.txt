@@ -14,4 +14,6 @@ target_link_libraries(wxcalc ${wxWidgets_LIBRARIES})
 
 install(TARGETS wxcalc RUNTIME DESTINATION bin)
 
-add_subdirectory(test)
+if (DEFINED TESTS AND NOT TESTS EQUAL 0)
+  add_subdirectory(test)
+endif()
