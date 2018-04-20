@@ -3,7 +3,7 @@ include("${wxWidgets_USE_FILE}")
 
 # add resources on windows
 if (WIN32)
-  set(sources "${sources}; GUI/App.rc")
+  set(sources "${sources}; App.rc")
 endif()
 
 file(GLOB sources *.cpp)
